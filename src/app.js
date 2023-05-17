@@ -1,32 +1,20 @@
 const express = require('express')
-const mongoose = require('mongoose')
-const cors = require('cors')
-const dotenv = require("dotenv");
+const dotenv = require('dotenv')
+const { graphqlHTTP } = require('express-graphql')
+const schema = require('./schema/schema')
 
-dotenv.config();
+dotenv.config()
 const app = express()
-const PORT = process.env.SERVER_PORT || 5000
-// app.use(cors)
-app.use(express.json({extended: true}))
-// app.use('/api/auth', require('./routes/auth.router'))
-app.use('/api', require('./routes/start.router'))
-app.use('/api', require('./routes/data.router'))
+const PORT = process.env.PORT || 5000
 
-async function start() {
+app.use('/graphql', graphqlHTTP({
+  schema,
+  graphiql: process.env.NODE_ENV === 'development'
+}))
 
-  try {
-    mongoose.set('strictQuery', false)
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
 
-    app.listen(PORT, () => console.log(`App started on ${PORT}`))
-
-  } catch (error) {
-    console.log('Server error', error)
-    process.exit(1)
-  }
+function start() {
+  app.listen(PORT, () => console.log(`App started on ${PORT}`))
 }
 
 start()
