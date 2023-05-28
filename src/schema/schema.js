@@ -1,7 +1,17 @@
 const Project = require('../models/Project')
 const Client = require('../models/Client')
 
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType } = require('graphql')
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType, GraphQLInt, GraphQLFloat } = require('graphql')
+
+const History = new GraphQLObjectType({
+  name: 'History',
+  fields: () => ({
+    id: { type: GraphQLID },
+    from: { type: GraphQLString },
+    to: { type: GraphQLString },
+    sum: { type: GraphQLFloat }
+  })
+})
 
 const ClientType = new GraphQLObjectType({
   name: 'Client',
@@ -10,6 +20,7 @@ const ClientType = new GraphQLObjectType({
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     phone: { type: GraphQLString },
+    history: { type: GraphQLList(History) }
   })
 })
 
@@ -157,6 +168,31 @@ const Mutation = new GraphQLObjectType({
               name: args.name,
               description: args.description,
               status: args.status
+            }
+          },
+          { new: true }
+        )
+      }
+    },
+
+    updateHistory: {
+      type: ClientType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        from: { type: GraphQLNonNull(GraphQLString) },
+        to: { type: GraphQLNonNull(GraphQLString) },
+        sum: { type: GraphQLNonNull(GraphQLFloat) }
+      },
+      resolve(parent, args) {
+        return Client.findByIdAndUpdate(
+          args.id,
+          {
+            $addToSet: {
+              history: {
+                from: args.from,
+                to: args.to,
+                sum: args.sum,
+              }
             }
           },
           { new: true }

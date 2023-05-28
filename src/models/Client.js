@@ -9,7 +9,12 @@ const ClientSchema = new mongoose.Schema({
   },
   phone: {
     type: String
-  }
+  },
+  history: [{
+    from: String,
+    to: String,
+    sum: Number
+  }]
 })
 
-module.exports = mongoose.model('Client', ClientSchema) 
+module.exports = mongoose.model('Client', ClientSchema)
