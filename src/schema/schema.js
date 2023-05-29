@@ -1,7 +1,9 @@
 const Project = require('../models/Project')
 const Client = require('../models/Client')
+const User = require('../models/User')
 
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType, GraphQLInt, GraphQLFloat } = require('graphql')
+
 
 const History = new GraphQLObjectType({
   name: 'History',
@@ -12,6 +14,48 @@ const History = new GraphQLObjectType({
     sum: { type: GraphQLFloat }
   })
 })
+
+const SubjectItemType = new GraphQLObjectType({
+  name: 'SubjectItem',
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    icon: { type: GraphQLString },
+    color: { type: GraphQLString },
+    value: { type: GraphQLFloat },
+  })
+})
+
+const SubjectsType = new GraphQLObjectType({
+  name: 'Subjects',
+  fields: () => ({
+    incomes: { type: GraphQLList(SubjectItemType) },
+    accounts: { type: GraphQLList(SubjectItemType) },
+    expenses: { type: GraphQLList(SubjectItemType) },
+  })
+})
+
+const TotalType = new GraphQLObjectType({
+  name: 'Total',
+  fields: () => ({
+    incomes: { type: GraphQLFloat },
+    accounts: { type: GraphQLFloat },
+    expenses: { type: GraphQLFloat },
+  })
+})
+
+const UserType = new GraphQLObjectType({
+  name: 'User',
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    password: { type: GraphQLString },
+    subjects: { type: SubjectsType },
+    total: { type: TotalType },
+  })
+})
+
 
 const ClientType = new GraphQLObjectType({
   name: 'Client',
@@ -67,6 +111,19 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID }},
       resolve(parent, args) {
         return Client.findById(args.id)
+      }
+    },
+    users: {
+      type: new GraphQLList(UserType),
+      resolve(parent, args) {
+        return User.find()
+      }
+    },
+    user: {
+      type: UserType,
+      args: { id: { type: GraphQLID }},
+      resolve(parent, args) {
+        return User.findById(args.id)
       }
     }
   }
