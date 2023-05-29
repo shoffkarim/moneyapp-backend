@@ -51,7 +51,9 @@ const UserType = new GraphQLObjectType({
     name: { type: GraphQLString },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
-    subjects: { type: SubjectsType },
+    incomes: { type: GraphQLList(SubjectItemType) },
+    accounts: { type: GraphQLList(SubjectItemType) },
+    expenses: { type: GraphQLList(SubjectItemType) },
     total: { type: TotalType },
   })
 })
@@ -132,6 +134,140 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'mutation',
   fields: {
+    addUser: {
+      type: UserType,
+      args: {
+        name: { type: GraphQLNonNull(GraphQLString) },
+        email: { type: GraphQLNonNull(GraphQLString) },
+        password: { type: GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parent, args) {
+        const user = new User({
+          name: args.name,
+          email: args.email,
+          password: args.password,
+          incomes: [],
+          accounts: [],
+          expenses: [],
+          total: {
+            incomes: 0,
+            accounts: 0,
+            expenses: 0
+          }
+        })
+
+        return user.save()
+      }
+    },
+
+    setIncome: {
+      type: UserType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLNonNull(GraphQLString) },
+        icon: { type: GraphQLNonNull(GraphQLString) },
+        color: { type: GraphQLNonNull(GraphQLString) },
+        value: { type: GraphQLNonNull(GraphQLFloat) }
+      },
+      resolve(parent, args) {
+        return User.findByIdAndUpdate(
+          args.id,
+          {
+            $addToSet: {
+              incomes: {
+                name: args.name,
+                icon: args.icon,
+                color: args.color,
+                value: args.value
+              },
+            }
+          },
+          { new: true }
+        )
+      }
+    },
+
+    setAccount: {
+      type: UserType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLNonNull(GraphQLString) },
+        icon: { type: GraphQLNonNull(GraphQLString) },
+        color: { type: GraphQLNonNull(GraphQLString) },
+        value: { type: GraphQLNonNull(GraphQLFloat) }
+      },
+      resolve(parent, args) {
+        return User.findByIdAndUpdate(
+          args.id,
+          {
+            $addToSet: {
+              accounts: {
+                name: args.name,
+                icon: args.icon,
+                color: args.color,
+                value: args.value
+              },
+            }
+          },
+          { new: true }
+        )
+      }
+    },
+
+    setExpense: {
+      type: UserType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLNonNull(GraphQLString) },
+        icon: { type: GraphQLNonNull(GraphQLString) },
+        color: { type: GraphQLNonNull(GraphQLString) },
+        value: { type: GraphQLNonNull(GraphQLFloat) }
+      },
+      resolve(parent, args) {
+        return User.findByIdAndUpdate(
+          args.id,
+          {
+            $addToSet: {
+              expenses: {
+                name: args.name,
+                icon: args.icon,
+                color: args.color,
+                value: args.value
+              },
+            }
+          },
+          { new: true }
+        )
+      }
+    },
+
+
+    setTotal: {
+      type: UserType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        incomes: { type: GraphQLNonNull(GraphQLFloat) },
+        accounts: { type: GraphQLNonNull(GraphQLFloat) },
+        expenses: { type: GraphQLNonNull(GraphQLFloat) },
+      },
+      resolve(parent, args) {
+        return User.findByIdAndUpdate(
+          args.id,
+          {
+            $set: {
+              total: {
+                incomes: args.incomes,
+                accounts: args.accounts,
+                expenses: args.expenses
+              },
+            }
+          },
+          { new: true }
+        )
+      }
+    },
+
+    // other
     addClient: {
       type: ClientType,
       args: {

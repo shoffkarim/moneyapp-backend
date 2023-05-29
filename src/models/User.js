@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Subjects = require('./Subjects')
+const SubjectItem = require('./SubjectItem')
 const Total = require('./Total')
 
 const UserSchema = new mongoose.Schema({
@@ -12,9 +12,9 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String
   },
-  subjects: {
-    type: Subjects.schema
-  },
+  incomes: [ SubjectItem.schema ],
+  accounts: [ SubjectItem.schema ],
+  expenses:  [ SubjectItem.schema ],
   total: {
     type: Total.schema
   }
