@@ -153,7 +153,9 @@ const Mutation = new GraphQLObjectType({
             incomes: 0,
             accounts: 0,
             expenses: 0
-          }
+          },
+          tags: [],
+          transactions: []
         })
 
         return user.save()
@@ -240,8 +242,6 @@ const Mutation = new GraphQLObjectType({
         )
       }
     },
-
-
     setTotal: {
       type: UserType,
       args: {
@@ -252,6 +252,7 @@ const Mutation = new GraphQLObjectType({
       },
       resolve(parent, args) {
         return User.findByIdAndUpdate(
+
           args.id,
           {
             $set: {
