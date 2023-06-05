@@ -44,6 +44,27 @@ const TotalType = new GraphQLObjectType({
   })
 })
 
+const TagType = new GraphQLObjectType({
+  name: 'Tag',
+  fields: () => ({
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+  })
+})
+
+const TransactionType = new GraphQLObjectType({
+  name: 'Transaction',
+  fields: () => ({
+    id: { type: GraphQLID },
+    date: { type: GraphQLString },
+    idFrom: { type: GraphQLID },
+    idTo: { type: GraphQLID },
+    value: { type: GraphQLFloat },
+    comment: { type: GraphQLString },
+    tags: { type: GraphQLList(TagType)}
+  })
+})
+
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
@@ -55,6 +76,7 @@ const UserType = new GraphQLObjectType({
     accounts: { type: GraphQLList(SubjectItemType) },
     expenses: { type: GraphQLList(SubjectItemType) },
     total: { type: TotalType },
+    transactions: { type: GraphQLList(TransactionType) }
   })
 })
 
@@ -169,7 +191,7 @@ const Mutation = new GraphQLObjectType({
         name: { type: GraphQLNonNull(GraphQLString) },
         icon: { type: GraphQLNonNull(GraphQLString) },
         color: { type: GraphQLNonNull(GraphQLString) },
-        value: { type: GraphQLNonNull(GraphQLFloat) }
+        value: { type: GraphQLNonNull(GraphQLFloat) },
       },
       resolve(parent, args) {
         return User.findByIdAndUpdate(
@@ -260,6 +282,36 @@ const Mutation = new GraphQLObjectType({
                 incomes: args.incomes,
                 accounts: args.accounts,
                 expenses: args.expenses
+              },
+            }
+          },
+          { new: true }
+        )
+      }
+    },
+
+    setTransaction: {
+      type: UserType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        idFrom: { type: GraphQLNonNull(GraphQLID) },
+        idTo: { type: GraphQLNonNull(GraphQLID) },
+        value: { type: GraphQLNonNull(GraphQLFloat) },
+        comment: { type: GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parent, args) {
+        return User.findByIdAndUpdate(
+
+          args.id,
+          {
+            $addToSet: {
+              transactions: {
+                idFrom: args.idFrom,
+                idTo: args.idTo,
+                value: args.value,
+                comment: args.comment,
+                date: '',
+                tags: []
               },
             }
           },

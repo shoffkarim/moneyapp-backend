@@ -20,7 +20,6 @@ const UserSchema = new mongoose.Schema({
   total: {
     type: Total.schema
   },
-  tags: [],
   transactions: [ Transaction.schema ]
 })
 

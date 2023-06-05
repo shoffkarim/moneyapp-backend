@@ -3,7 +3,7 @@ const Tag = require('./Tag')
 
 const TransactionSchema = new mongoose.Schema({
   date: {
-    type: Date
+    type: String
   },
   idFrom: {
     type: String,
