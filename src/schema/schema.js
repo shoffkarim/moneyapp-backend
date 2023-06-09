@@ -2,7 +2,7 @@ const Project = require('../models/Project')
 const Client = require('../models/Client')
 const User = require('../models/User')
 
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType, GraphQLInt, GraphQLFloat, GraphQLScalarType } = require('graphql')
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType, GraphQLInt, GraphQLFloat, GraphQLScalarType, GraphQLInputObjectType } = require('graphql')
 
 
 const History = new GraphQLObjectType({
@@ -48,9 +48,19 @@ const TagType = new GraphQLObjectType({
   name: 'Tag',
   fields: () => ({
     id: { type: GraphQLID },
+    tagId: { type: GraphQLID },
     name: { type: GraphQLString },
   })
 })
+
+const TagInputType = new GraphQLInputObjectType({
+  name: 'TagInput',
+  fields: {
+    tagId: { type: GraphQLID },
+    name: { type: GraphQLString },
+  }
+})
+
 
 const TransactionType = new GraphQLObjectType({
   name: 'Transaction',
@@ -298,7 +308,8 @@ const Mutation = new GraphQLObjectType({
         idTo: { type: GraphQLNonNull(GraphQLID) },
         value: { type: GraphQLNonNull(GraphQLFloat) },
         comment: { type: GraphQLNonNull(GraphQLString) },
-        date: { type: GraphQLNonNull(GraphQLString)}
+        date: { type: GraphQLNonNull(GraphQLString)},
+        tags: { type: GraphQLNonNull(GraphQLList(TagInputType))}
       },
       resolve(parent, args) {
         return User.findByIdAndUpdate(
@@ -312,7 +323,7 @@ const Mutation = new GraphQLObjectType({
                 value: args.value,
                 comment: args.comment,
                 date: args.date,
-                tags: []
+                tags: args.tags
               },
             }
           },
