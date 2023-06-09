@@ -2,9 +2,6 @@ const mongoose = require('mongoose')
 const Tag = require('./Tag')
 
 const TransactionSchema = new mongoose.Schema({
-  date: {
-    type: String
-  },
   idFrom: {
     type: String,
   },
@@ -17,7 +14,10 @@ const TransactionSchema = new mongoose.Schema({
   comment: {
     type: String
   },
-  tags: [ Tag.schema ]
-})
+  tags: [ Tag.schema ],
+  date: {
+    type: String
+  }
+}, { timestamps: true })
 
 module.exports = mongoose.model('Transaction', TransactionSchema)

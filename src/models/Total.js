@@ -10,6 +10,6 @@ const TotalSchema = new mongoose.Schema({
   expenses: {
     type: Number,
   }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Total', TotalSchema)

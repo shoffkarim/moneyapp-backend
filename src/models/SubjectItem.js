@@ -13,6 +13,6 @@ const SubjectItemSchema = new mongoose.Schema({
   value: {
     type: Number,
   }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('SubjectItem', SubjectItemSchema)

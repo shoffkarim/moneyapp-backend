@@ -2,7 +2,7 @@ const Project = require('../models/Project')
 const Client = require('../models/Client')
 const User = require('../models/User')
 
-const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType, GraphQLInt, GraphQLFloat } = require('graphql')
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLEnumType, GraphQLInt, GraphQLFloat, GraphQLScalarType } = require('graphql')
 
 
 const History = new GraphQLObjectType({
@@ -298,6 +298,7 @@ const Mutation = new GraphQLObjectType({
         idTo: { type: GraphQLNonNull(GraphQLID) },
         value: { type: GraphQLNonNull(GraphQLFloat) },
         comment: { type: GraphQLNonNull(GraphQLString) },
+        date: { type: GraphQLNonNull(GraphQLString)}
       },
       resolve(parent, args) {
         return User.findByIdAndUpdate(
@@ -310,7 +311,7 @@ const Mutation = new GraphQLObjectType({
                 idTo: args.idTo,
                 value: args.value,
                 comment: args.comment,
-                date: '',
+                date: args.date,
                 tags: []
               },
             }

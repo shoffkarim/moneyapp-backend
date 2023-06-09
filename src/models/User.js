@@ -21,6 +21,6 @@ const UserSchema = new mongoose.Schema({
     type: Total.schema
   },
   transactions: [ Transaction.schema ]
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', UserSchema)
