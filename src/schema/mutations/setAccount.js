@@ -1,4 +1,4 @@
-const { GraphQLID, GraphQLString, GraphQLFloat } = require('graphql')
+const { GraphQLID, GraphQLString, GraphQLFloat, GraphQLNonNull } = require('graphql')
 const UserType = require('../userType')
 const User = require('../../models/User')
 
