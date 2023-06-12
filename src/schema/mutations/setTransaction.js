@@ -9,6 +9,8 @@ const setTransaction = {
     id: { type: GraphQLNonNull(GraphQLID) },
     idFrom: { type: GraphQLNonNull(GraphQLID) },
     idTo: { type: GraphQLNonNull(GraphQLID) },
+    typeFrom: { type: GraphQLNonNull(GraphQLString) },
+    typeTo: { type: GraphQLNonNull(GraphQLString) },
     value: { type: GraphQLNonNull(GraphQLFloat) },
     comment: { type: GraphQLNonNull(GraphQLString) },
     date: { type: GraphQLNonNull(GraphQLString)},
@@ -22,6 +24,8 @@ const setTransaction = {
         $addToSet: {
           transactions: {
             idFrom: args.idFrom,
+            typeFrom: args.typeFrom,
+            typeTo: args.typeTo,
             idTo: args.idTo,
             value: args.value,
             comment: args.comment,

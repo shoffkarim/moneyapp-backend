@@ -8,6 +8,12 @@ const TransactionSchema = new mongoose.Schema({
   idTo: {
     type: String
   },
+  typeFrom: {
+    type: String,
+  },
+  typeTo: {
+    type: String
+  },
   value: {
     type: Number
   },
