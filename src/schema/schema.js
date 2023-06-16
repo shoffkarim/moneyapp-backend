@@ -8,7 +8,8 @@ const setExpense = require('./mutations/setExpense')
 const setTotal = require('./mutations/setTotal')
 const setTransaction = require('./mutations/setTransaction')
 
-const { GraphQLObjectType, GraphQLID, GraphQLSchema, GraphQLList } = require('graphql')
+const { GraphQLObjectType, GraphQLID, GraphQLSchema, GraphQLList, GraphQLString } = require('graphql')
+const TransactionType = require('./transactionType')
 
 
 
@@ -26,6 +27,21 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID }},
       resolve(parent, args) {
         return User.findById(args.id)
+      }
+    },
+    transactions: {
+      type: new GraphQLList(TransactionType),
+      args: {
+        id: { type: GraphQLID },
+        firstDay: { type: GraphQLString },
+        lastDay: { type: GraphQLString }
+      },
+      resolve(parent, args) {
+        return User.findById(args.id).then((user) => user.transactions.filter((item) => {
+          if(new Date(item.date) >= new Date(args.firstDay) && new Date(item.date) <= new Date(args.lastDay)) {
+            return item
+          }
+        }))
       }
     }
   }
