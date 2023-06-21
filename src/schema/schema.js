@@ -10,8 +10,9 @@ const setTransaction = require('./mutations/setTransaction')
 
 const { GraphQLObjectType, GraphQLID, GraphQLSchema, GraphQLList, GraphQLString } = require('graphql')
 const TransactionType = require('./transactionType')
+const CalendarDayItemType = require('./calendarItemsType')
 
-
+const handleData = require('./utils/handleData')
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -42,6 +43,42 @@ const RootQuery = new GraphQLObjectType({
             return item
           }
         }))
+      }
+    },
+    calendarItems: {
+      type: new GraphQLList(CalendarDayItemType),
+      args: {
+        id: { type: GraphQLID },
+        firstDay: { type: GraphQLString },
+        lastDay: { type: GraphQLString }
+      },
+      resolve(parent, args) {
+        const userFound = User.findById(args.id)
+        const data = userFound.then((user) => {
+          const transactions = user.transactions.filter((item) => {
+            if(new Date(item.date) >= new Date(args.firstDay) && new Date(item.date) <= new Date(args.lastDay)) {
+              return item
+            }
+          })
+          const cards = {
+            incomes: user.incomes,
+            accounts: user.accounts,
+            expenses: user.expenses,
+          }
+
+          return handleData(cards, transactions)
+        })
+        // data.then((a) => handleData(a) )
+
+        // const cards = userFound.then((user) => ({
+        //   incomes: user.incomes,
+        //   accounts: user.accounts,
+        //   expenses: user.expenses,
+
+        // }))
+
+        // cards.then((a) => console.log(a))
+        return data
       }
     }
   }
