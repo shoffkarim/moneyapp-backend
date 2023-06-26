@@ -7,6 +7,9 @@ const setAccount = require('./mutations/setAccount')
 const setExpense = require('./mutations/setExpense')
 const setTotal = require('./mutations/setTotal')
 const setTransaction = require('./mutations/setTransaction')
+const updateAccount = require('./mutations/updateAccount')
+const updateIncome = require('./mutations/updateIncome')
+const updateExpense = require('./mutations/updateExpense')
 
 const { GraphQLObjectType, GraphQLID, GraphQLSchema, GraphQLList, GraphQLString } = require('graphql')
 const TransactionType = require('./transactionType')
@@ -68,16 +71,7 @@ const RootQuery = new GraphQLObjectType({
 
           return handleData(cards, transactions)
         })
-        // data.then((a) => handleData(a) )
 
-        // const cards = userFound.then((user) => ({
-        //   incomes: user.incomes,
-        //   accounts: user.accounts,
-        //   expenses: user.expenses,
-
-        // }))
-
-        // cards.then((a) => console.log(a))
         return data
       }
     }
@@ -93,6 +87,9 @@ const Mutation = new GraphQLObjectType({
     setExpense,
     setTotal,
     setTransaction,
+    updateAccount,
+    updateIncome,
+    updateExpense
   }
 })
 
