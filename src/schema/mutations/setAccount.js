@@ -12,20 +12,34 @@ const setAccount = {
     value: { type: GraphQLNonNull(GraphQLFloat) }
   },
   resolve(parent, args) {
-    return User.findByIdAndUpdate(
-      args.id,
-      {
-        $addToSet: {
-          accounts: {
-            name: args.name,
-            icon: args.icon,
-            color: args.color,
-            value: args.value
+    const userFound = User.findById(args.id)
+    const sum = userFound.then((user) => {
+      const counter = user.accounts.reduce((acc, item) => {
+        acc += item.value
+        return acc
+      }, 0)
+
+      return counter + args.value
+    })
+    sum.then(s => {
+      return User.findByIdAndUpdate(
+        args.id,
+        {
+          $addToSet: {
+            accounts: {
+              name: args.name,
+              icon: args.icon,
+              color: args.color,
+              value: args.value
+            },
           },
-        }
-      },
-      { new: true }
-    )
+          $set: {
+            "total.accounts": s
+          }
+        },
+        { new: true }
+      )
+    })
   }
 }
 

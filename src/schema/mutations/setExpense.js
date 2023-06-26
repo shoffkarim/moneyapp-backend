@@ -12,20 +12,34 @@ const setExpense = {
     value: { type: GraphQLNonNull(GraphQLFloat) }
   },
   resolve(parent, args) {
-    return User.findByIdAndUpdate(
-      args.id,
-      {
-        $addToSet: {
-          expenses: {
-            name: args.name,
-            icon: args.icon,
-            color: args.color,
-            value: args.value
+    const userFound = User.findById(args.id)
+    const sum = userFound.then((user) => {
+      const counter = user.expenses.reduce((acc, item) => {
+        acc += item.value
+        return acc
+      }, 0)
+
+      return counter + args.value
+    })
+    sum.then(s => {
+      return User.findByIdAndUpdate(
+        args.id,
+        {
+          $addToSet: {
+            expenses: {
+              name: args.name,
+              icon: args.icon,
+              color: args.color,
+              value: args.value
+            },
           },
-        }
-      },
-      { new: true }
-    )
+          $set: {
+            "total.expenses": s
+          }
+        },
+        { new: true }
+      )
+    })
   }
 }
 
