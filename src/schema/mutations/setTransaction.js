@@ -24,7 +24,9 @@ const setTransaction = {
           {
             $inc: {
               "accounts.$[element].value": -args.value,
-              "expenses.$[elemTo].value": args.value
+              "expenses.$[elemTo].value": args.value,
+              "total.expenses": args.value,
+              "total.accounts": -args.value
             },
             $addToSet: {
               transactions: {
@@ -54,7 +56,9 @@ const setTransaction = {
           {
             $inc: {
               "incomes.$[element].value": args.value,
-              "accounts.$[elemTo].value": args.value
+              "accounts.$[elemTo].value": args.value,
+              "total.incomes": args.value,
+              "total.accounts": args.value
             },
             $addToSet: {
               transactions: {
