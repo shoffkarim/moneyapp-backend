@@ -17,25 +17,97 @@ const setTransaction = {
     tags: { type: GraphQLNonNull(GraphQLList(TagInputType))}
   },
   resolve(parent, args) {
-    return User.findByIdAndUpdate(
-
-      args.id,
-      {
-        $addToSet: {
-          transactions: {
-            idFrom: args.idFrom,
-            typeFrom: args.typeFrom,
-            typeTo: args.typeTo,
-            idTo: args.idTo,
-            value: args.value,
-            comment: args.comment,
-            date: args.date,
-            tags: args.tags
+    if (args.typeTo === "expenses") {
+      return (
+        User.updateOne(
+          {_id: args.id },
+          {
+            $inc: {
+              "accounts.$[element].value": -args.value,
+              "expenses.$[elemTo].value": args.value
+            },
+            $addToSet: {
+              transactions: {
+                idFrom: args.idFrom,
+                typeFrom: args.typeFrom,
+                typeTo: args.typeTo,
+                idTo: args.idTo,
+                value: args.value,
+                comment: args.comment,
+                date: args.date,
+                tags: args.tags
+              },
+            },
           },
-        }
-      },
-      { new: true }
-    )
+          {
+            arrayFilters: [
+              { "element._id": args.idFrom },
+              { "elemTo._id": args.idTo },
+            ]
+          }
+        )
+      )
+    } else if (args.typeTo === "accounts" && args.typeFrom === "incomes") {
+      return (
+        User.updateOne(
+          {_id: args.id },
+          {
+            $inc: {
+              "incomes.$[element].value": args.value,
+              "accounts.$[elemTo].value": args.value
+            },
+            $addToSet: {
+              transactions: {
+                idFrom: args.idFrom,
+                typeFrom: args.typeFrom,
+                typeTo: args.typeTo,
+                idTo: args.idTo,
+                value: args.value,
+                comment: args.comment,
+                date: args.date,
+                tags: args.tags
+              },
+            },
+          },
+          {
+            arrayFilters: [
+              { "element._id": args.idFrom },
+              { "elemTo._id": args.idTo },
+            ]
+          }
+        )
+      )
+    } else if (args.typeTo === "accounts" && args.typeFrom === "accounts") {
+      return (
+        User.updateOne(
+          {_id: args.id },
+          {
+            $inc: {
+              "accounts.$[element].value": -args.value,
+              "accounts.$[elemTo].value": args.value
+            },
+            $addToSet: {
+              transactions: {
+                idFrom: args.idFrom,
+                typeFrom: args.typeFrom,
+                typeTo: args.typeTo,
+                idTo: args.idTo,
+                value: args.value,
+                comment: args.comment,
+                date: args.date,
+                tags: args.tags
+              },
+            },
+          },
+          {
+            arrayFilters: [
+              { "element._id": args.idFrom },
+              { "elemTo._id": args.idTo },
+            ]
+          }
+        )
+      )
+    }
   }
 }
 

@@ -21,7 +21,7 @@ const CalendarDayDescriptionType = new GraphQLObjectType({
 const CalendarDayItemType = new GraphQLObjectType({
   name: 'CalendarDayItem',
   fields: () => ({
-    date: { type: GraphQLString },
+    date: { type: GraphQLFloat },
     description: { type: CalendarDayDescriptionType },
     items: { type: GraphQLList(CalendarItemType) },
   })
