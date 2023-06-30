@@ -47,7 +47,9 @@ const handleData = (cards, data ) => {
           id: item.id,
           title: card?.name,
           backgroundColor: card?.color,
-          value: item.value
+          value: item.value,
+          tags: item.tags,
+          comment: item.comment
         }
       })
     })

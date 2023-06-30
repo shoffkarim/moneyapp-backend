@@ -1,4 +1,5 @@
 const { GraphQLObjectType, GraphQLFloat, GraphQLString, GraphQLID, GraphQLList } = require('graphql')
+const { TagType } = require('./tagType')
 
 const CalendarItemType = new GraphQLObjectType({
   name: 'CalendarItem',
@@ -7,6 +8,8 @@ const CalendarItemType = new GraphQLObjectType({
     title: { type: GraphQLString },
     backgroundColor: { type: GraphQLString },
     value: { type: GraphQLFloat },
+    comment: { type: GraphQLString },
+    tags: { type: GraphQLList(TagType)}
   })
 })
 
