@@ -10,6 +10,7 @@ const setTransaction = require('./mutations/setTransaction')
 const updateAccount = require('./mutations/updateAccount')
 const updateIncome = require('./mutations/updateIncome')
 const updateExpense = require('./mutations/updateExpense')
+const deleteTransaction = require('./mutations/deleteTransaction')
 
 const { GraphQLObjectType, GraphQLID, GraphQLSchema, GraphQLList, GraphQLString } = require('graphql')
 const TransactionType = require('./transactionType')
@@ -89,7 +90,8 @@ const Mutation = new GraphQLObjectType({
     setTransaction,
     updateAccount,
     updateIncome,
-    updateExpense
+    updateExpense,
+    deleteTransaction
   }
 })
 
